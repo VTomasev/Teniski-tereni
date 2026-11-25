@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#153d32">
+  <meta name="theme-color" content="#f6f6f3">
   <meta name="description" content="Pronađi slobodan teniski ili padel termin, odaberi teren i rezerviraj online.">
   <title>Rally — rezervacija terena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,15 +59,15 @@
 
       <div class="benefit-row" id="benefits">
         <div class="benefit">
-          <span class="benefit-mark">24/7</span>
+          <span class="benefit-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v5l3 2"></path></svg></span>
           <div><strong>Rezerviraj kad ti odgovara</strong><span>Raspored dostupan online, i izvan radnog vremena.</span></div>
         </div>
         <div class="benefit">
-          <span class="benefit-mark">01</span>
-          <div><strong>Više terena, jedan raspored</strong><span>Usporedi dostupnost i odaberi pravi teren.</span></div>
+          <span class="benefit-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="1"></rect><path d="M12 5v14M4 12h16M8 5v14M16 5v14"></path></svg></span>
+          <div><strong>Odaberi svoj teren</strong><span>Pregledaj tjedni raspored odabranog terena.</span></div>
         </div>
         <div class="benefit">
-          <span class="benefit-mark">↻</span>
+          <span class="benefit-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"></path><path d="M5.5 9a7 7 0 0 1 11.6-2L20 12M4 12l2.9 5a7 7 0 0 0 11.6-2"></path></svg></span>
           <div><strong>Dostupnost uživo</strong><span>Rezervirani termini odmah su vidljivi ostalim igračima.</span></div>
         </div>
       </div>
@@ -82,7 +82,7 @@
           <article class="step-card">
             <span class="step-number">01 / ODABERI</span>
             <h3>Pronađi svoj teren</h3>
-            <p>Usporedi dostupne termine na svim aktivnim terenima za odabrani dan.</p>
+            <p>Odaberi aktivan teren i pregledaj dostupne termine za cijeli tjedan.</p>
           </article>
           <article class="step-card">
             <span class="step-number">02 / REZERVIRAJ</span>
@@ -113,10 +113,12 @@
       <h1 id="setupTitle">Poveži svoju bazu</h1>
       <p>Za zajedničke rezervacije i korisničke račune poveži aplikaciju sa svojim Supabase projektom.</p>
       <ol class="setup-steps">
-        <li>Pokreni <code>supabase.sql</code> u SQL Editoru svog Supabase projekta.</li>
+        <li>Primijeni SQL migracije iz <code>supabase/migrations</code> na svoj Supabase projekt.</li>
         <li>U <code>app.js</code> unesi Project URL i anon/publishable ključ u konfiguraciju.</li>
         <li>Posluži stranicu preko hostinga ili lokalnog web servera pa osvježi stranicu.</li>
         <li>Dodaj ili uredi terene u tablici <code>courts</code> u Supabaseu.</li>
+        <li>U Supabase Authentication → URL Configuration dodaj adresu aplikacije u Redirect URLs. Za lokalno testiranje koristi <code>http://127.0.0.1:8000/**</code>; nakon objave dodaj i javnu adresu. Za slanje e-mailova korisnicima potreban je vlastiti SMTP.</li>
+        <li>Administratorske ovlasti zasebnom računu dodjeljuju se u bazi; ne mogu se uključiti samom registracijom.</li>
       </ol>
       <div class="setup-warning">U preglednik se smije staviti samo javni anon/publishable ključ. Nikad ne stavljaj service_role ključ u ovu datoteku.</div>
     </section>
@@ -133,12 +135,48 @@
         </div>
         <div class="field">
           <label for="authPassword">Lozinka</label>
-          <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Najmanje 8 znakova" required>
+          <div class="password-field">
+            <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Najmanje 8 znakova" required>
+            <button type="button" class="password-toggle" id="togglePassword" aria-controls="authPassword" aria-label="Prikaži lozinku">Prikaži</button>
+          </div>
         </div>
         <div class="form-error" id="authError" role="status"></div>
         <button class="button button-primary form-submit" id="authSubmit" type="submit">Prijavi se</button>
       </form>
+      <button class="link-button" id="forgotPassword" type="button">Zaboravljena lozinka?</button>
       <p class="auth-switch"><span id="authSwitchText">Nemaš račun?</span> <button class="link-button" id="authSwitch" type="button">Registriraj se</button></p>
+    </section>
+
+    <section class="auth-card hidden" id="resetRequestView" aria-labelledby="resetRequestTitle">
+      <button class="link-button auth-back" id="resetBack" type="button">← Povratak na prijavu</button>
+      <div class="eyebrow">Oporavak računa</div>
+      <h1 id="resetRequestTitle">Zaboravljena lozinka?</h1>
+      <p>Unesi e-mail svojeg računa. Poslat ćemo ti poveznicu za postavljanje nove lozinke.</p>
+      <form id="resetRequestForm">
+        <div class="field">
+          <label for="resetEmail">E-mail</label>
+          <input id="resetEmail" type="email" autocomplete="email" placeholder="ime@primjer.hr" required>
+        </div>
+        <div class="form-error" id="resetRequestError" role="status"></div>
+        <button class="button button-primary form-submit" id="resetRequestSubmit" type="submit">Pošalji poveznicu</button>
+      </form>
+    </section>
+
+    <section class="auth-card hidden" id="resetPasswordView" aria-labelledby="resetPasswordTitle">
+      <div class="eyebrow">Oporavak računa</div>
+      <h1 id="resetPasswordTitle">Postavi novu lozinku</h1>
+      <p>Odaberi novu lozinku za svoj račun.</p>
+      <form id="resetPasswordForm">
+        <div class="field">
+          <label for="newPassword">Nova lozinka</label>
+          <div class="password-field">
+            <input id="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Najmanje 8 znakova" required>
+            <button type="button" class="password-toggle" id="toggleNewPassword" aria-controls="newPassword" aria-label="Prikaži lozinku">Prikaži</button>
+          </div>
+        </div>
+        <div class="form-error" id="resetPasswordError" role="status"></div>
+        <button class="button button-primary form-submit" id="resetPasswordSubmit" type="submit">Spremi novu lozinku</button>
+      </form>
     </section>
 
     <section class="page hidden" id="appView">
@@ -150,51 +188,129 @@
         </div>
         <div class="account">
           <span class="account-email" id="accountEmail"></span>
+          <button class="link-button hidden" id="openAdmin" type="button">Administracija</button>
           <button class="link-button" id="signOut" type="button">Odjava</button>
         </div>
       </div>
+      <p class="form-error" id="adminAccessError" role="status"></p>
 
-      <div class="date-toolbar">
-        <div class="date-title" id="dateHeading"></div>
-        <div class="date-actions">
-          <button class="button icon-button" id="prevDay" type="button" aria-label="Prethodni dan">‹</button>
-          <button class="button" id="todayButton" type="button">Danas</button>
-          <button class="button icon-button" id="nextDay" type="button" aria-label="Sljedeći dan">›</button>
-        </div>
-      </div>
-      <div class="week-strip" id="weekStrip" aria-label="Odabir datuma"></div>
-      <div class="calendar-card">
-        <div class="message" id="scheduleMessage" role="status"></div>
-        <div class="calendar-scroll">
-          <div class="calendar-grid" id="calendarGrid"></div>
-        </div>
-        <div class="calendar-footer">
-          <div class="legend">
-            <span class="legend-item"><span class="legend-swatch"></span>Moja rezervacija</span>
-            <span class="legend-item"><span class="legend-swatch booked"></span>Zauzeto</span>
+      <section class="my-bookings" aria-labelledby="myBookingsTitle">
+        <div class="my-bookings-heading">
+          <div>
+            <div class="eyebrow">Tvoji termini</div>
+            <h2 id="myBookingsTitle">Moje rezervacije</h2>
           </div>
-          <span>Termini počinju svakih 30 minuta</span>
+          <span>Predstojeći termini</span>
+        </div>
+        <p class="my-bookings-status" id="myBookingsStatus" role="status">Učitavam rezervacije…</p>
+        <div class="my-bookings-list" id="myBookingsList"></div>
+      </section>
+
+      <section class="court-picker" aria-labelledby="courtPickerTitle">
+        <h2 id="courtPickerTitle">Odaberi teren</h2>
+        <p>Odaberi teren za prikaz rasporeda.</p>
+        <p class="admin-status" id="courtPickerStatus" role="status">Učitavam terene…</p>
+        <div class="court-options" id="courtOptions"></div>
+      </section>
+      <div class="hidden" id="scheduleSection">
+        <div class="date-toolbar">
+          <div class="date-title" id="dateHeading"></div>
+          <div class="date-actions">
+            <button class="button icon-button" id="prevWeek" type="button" aria-label="Prethodni tjedan">‹</button>
+            <button class="button" id="todayButton" type="button">Ovaj tjedan</button>
+            <button class="button icon-button" id="nextWeek" type="button" aria-label="Sljedeći tjedan">›</button>
+          </div>
+        </div>
+        <div class="calendar-card">
+          <div class="message" id="scheduleMessage" role="status"></div>
+          <div class="calendar-scroll" tabindex="0" role="region" aria-label="Pomični tjedni raspored">
+            <div class="calendar-grid" id="calendarGrid" aria-label="Tjedni raspored odabranog terena"></div>
+          </div>
+          <div class="calendar-footer">
+            <div class="legend">
+              <span class="legend-item"><span class="legend-swatch"></span>Moja rezervacija</span>
+              <span class="legend-item"><span class="legend-swatch booked"></span>Zauzeto</span>
+            </div>
+            <span>Budući termini počinju svakih 30 minuta · hrvatsko vrijeme</span>
+          </div>
         </div>
       </div>
+    </section>
+
+    <section class="page hidden" id="adminView" aria-labelledby="adminTitle">
+      <div class="intro">
+        <div>
+          <div class="eyebrow">Upravljanje klubom</div>
+          <h1 id="adminTitle">Administracija</h1>
+          <p>Pregled rezervacija i upravljanje terenima.</p>
+        </div>
+        <button class="button" id="adminBack" type="button">← Povratak na raspored</button>
+      </div>
+
+      <section class="admin-card" aria-labelledby="adminBookingsTitle">
+        <div class="admin-heading">
+          <div>
+            <div class="eyebrow">Termini</div>
+            <h2 id="adminBookingsTitle">Rezervacije</h2>
+          </div>
+        </div>
+        <p class="admin-description">Odaberi teren za prikaz njegovog rasporeda.</p>
+        <div class="court-options" id="adminCourtOptions"></div>
+        <div class="hidden" id="adminScheduleSection">
+          <div class="admin-week-toolbar">
+            <div class="date-title" id="adminDateHeading"></div>
+            <div class="date-actions">
+              <button class="button icon-button" id="prevAdminWeek" type="button" aria-label="Prethodni tjedan">‹</button>
+              <button class="button" id="adminTodayButton" type="button">Ovaj tjedan</button>
+              <button class="button icon-button" id="nextAdminWeek" type="button" aria-label="Sljedeći tjedan">›</button>
+              <button class="button" id="refreshAdminBookings" type="button">Osvježi</button>
+            </div>
+          </div>
+          <p class="admin-description">Odaberi slobodan termin za novu rezervaciju ili postojeću rezervaciju za uređivanje.</p>
+          <div class="calendar-scroll" tabindex="0" role="region" aria-label="Pomični administratorski tjedni raspored">
+            <div class="calendar-grid admin-calendar-grid" id="adminCalendarGrid" aria-label="Administratorski tjedni kalendar"></div>
+          </div>
+        </div>
+        <p class="admin-status" id="adminBookingsStatus" role="status"></p>
+      </section>
+
+      <section class="admin-card" aria-labelledby="adminCourtsTitle">
+        <div class="eyebrow">Lokacije</div>
+        <h2 id="adminCourtsTitle">Tereni</h2>
+        <p class="admin-description">Neaktivni tereni nisu dostupni za nove rezervacije. Postojeće rezervacije ostaju sačuvane.</p>
+        <p class="admin-status" id="adminCourtsStatus" role="status"></p>
+        <div class="admin-list" id="adminCourtsList"></div>
+        <form id="addCourtForm" class="admin-add-court">
+          <div class="field">
+            <label for="newCourtName">Naziv novog terena</label>
+            <input id="newCourtName" type="text" minlength="2" maxlength="80" required placeholder="Na primjer: Teren — Dalj">
+          </div>
+          <button class="button button-primary" type="submit">Dodaj teren</button>
+        </form>
+      </section>
     </section>
   </main>
 
   <div class="modal-backdrop hidden" id="bookingModal" role="presentation">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
       <h2 id="bookingTitle">Rezerviraj termin</h2>
-      <p class="modal-subtitle" id="bookingSubtitle"></p>
-      <span class="duration-label">Odaberi trajanje</span>
-      <div class="duration-options" id="durationOptions">
-        <button class="duration-button" type="button" data-duration="60">1 sat</button>
-        <button class="duration-button" type="button" data-duration="90">1,5 sata</button>
-        <button class="duration-button" type="button" data-duration="120">2 sata</button>
-      </div>
-      <p class="modal-note">Termin je vidljiv drugim prijavljenim korisnicima kao zauzet.</p>
-      <div class="form-error" id="bookingError" role="status"></div>
-      <div class="modal-actions">
-        <button class="button" id="closeBooking" type="button">Odustani</button>
-        <button class="button button-primary" id="confirmBooking" type="button">Potvrdi rezervaciju</button>
-      </div>
+      <form id="bookingForm">
+        <div class="field"><label for="bookingCourt">Teren</label><select id="bookingCourt" required></select></div>
+        <div class="field"><label for="bookingDate">Datum</label><input id="bookingDate" type="date" required></div>
+        <div class="field"><label for="bookingTime">Početak</label><select id="bookingTime" required></select></div>
+        <div class="field">
+          <label for="bookingDuration">Trajanje</label>
+          <select id="bookingDuration" required>
+            <option value="60">1 sat</option><option value="90">1,5 sata</option><option value="120">2 sata</option>
+          </select>
+        </div>
+        <p class="modal-note">Termin je vidljiv drugim prijavljenim korisnicima kao zauzet.</p>
+        <div class="form-error" id="bookingError" role="status"></div>
+        <div class="modal-actions">
+          <button class="button" id="closeBooking" type="button">Odustani</button>
+          <button class="button button-primary" id="confirmBooking" type="submit">Potvrdi rezervaciju</button>
+        </div>
+      </form>
     </section>
   </div>
 
@@ -206,8 +322,74 @@
       <div class="form-error" id="detailsError" role="status"></div>
       <div class="modal-actions">
         <button class="button" id="closeDetails" type="button">Zatvori</button>
+        <button class="button hidden" id="editBooking" type="button">Uredi</button>
         <button class="button button-danger hidden" id="cancelBooking" type="button">Otkaži rezervaciju</button>
       </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="adminBookingModal" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="adminBookingTitle">
+      <h2 id="adminBookingTitle">Uredi rezervaciju</h2>
+      <p class="modal-subtitle" id="adminBookingSubtitle"></p>
+      <form id="adminBookingForm">
+        <div class="field">
+          <label for="adminEditCourt">Teren</label>
+          <select id="adminEditCourt" required></select>
+        </div>
+        <div class="field">
+          <label for="adminEditDate">Datum</label>
+          <input id="adminEditDate" type="date" required>
+        </div>
+        <div class="field">
+          <label for="adminEditTime">Početak</label>
+          <select id="adminEditTime" required></select>
+        </div>
+        <div class="field">
+          <label for="adminEditDuration">Trajanje</label>
+          <select id="adminEditDuration" required>
+            <option value="60">1 sat</option>
+            <option value="90">1,5 sata</option>
+            <option value="120">2 sata</option>
+          </select>
+        </div>
+        <p class="modal-note">Korisnik zasad ne dobiva automatsku obavijest o promjeni.</p>
+        <div class="form-error" id="adminBookingError" role="status"></div>
+        <div class="modal-actions admin-modal-actions">
+          <button class="button button-danger" id="adminCancelBooking" type="button">Otkaži rezervaciju</button>
+          <button class="button" id="adminCloseBooking" type="button">Zatvori</button>
+          <button class="button button-primary" id="adminSaveBooking" type="submit">Spremi promjene</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="adminCreateModal" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="adminCreateTitle">
+      <h2 id="adminCreateTitle">Dodaj rezervaciju</h2>
+      <form id="adminCreateForm">
+        <div class="field">
+          <label for="adminGuestName">Ime ili e-mail osobe</label>
+          <input id="adminGuestName" type="text" maxlength="120" required>
+        </div>
+        <div class="field"><label for="adminCreateCourt">Teren</label><select id="adminCreateCourt" required></select></div>
+        <div class="field"><label for="adminCreateDate">Datum</label><input id="adminCreateDate" type="date" required></div>
+        <div class="field"><label for="adminCreateTime">Početak</label><select id="adminCreateTime" required></select></div>
+        <div class="field">
+          <label for="adminCreateDuration">Trajanje</label>
+          <select id="adminCreateDuration" required>
+            <option value="60">1 sat</option>
+            <option value="90">1,5 sata</option>
+            <option value="120">2 sata</option>
+          </select>
+        </div>
+        <p class="modal-note">Ako e-mail pripada registriranom korisniku, rezervacija će biti povezana s njegovim računom. Obavijest se ne šalje automatski.</p>
+        <div class="form-error" id="adminCreateError" role="status"></div>
+        <div class="modal-actions">
+          <button class="button" id="adminCreateClose" type="button">Odustani</button>
+          <button class="button button-primary" id="adminCreateSave" type="submit">Dodaj rezervaciju</button>
+        </div>
+      </form>
     </section>
   </div>
 
