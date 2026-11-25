@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#153d32">
+  <meta name="description" content="Pronađi slobodan teniski ili padel termin, odaberi teren i rezerviraj online.">
+  <title>Rally — rezervacija terena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" id="brandHome"><span class="brand-mark" aria-hidden="true">R</span> rally</a>
+    <nav class="site-nav" id="siteNav" aria-label="Glavna navigacija">
+      <a href="#howItWorks">Kako funkcionira</a>
+      <a href="#benefits">Prednosti</a>
+    </nav>
+    <span class="topbar-note">Rezerviraj. Izađi na teren.</span>
+    <div class="topbar-actions" id="topbarActions">
+      <button class="topbar-login" id="headerLogin" type="button">Prijava</button>
+      <button class="topbar-book" id="headerBook" type="button">Rezerviraj teren</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="landing hidden" id="homeView">
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="hero-kicker">Tenis · padel · tvoj klub</div>
+          <h1>Manje dogovaranja.<br><span>Više igre.</span></h1>
+          <p>Pronađi slobodan termin, odaberi teren i rezerviraj online. Sve što ti treba za sljedeći meč — na jednom mjestu.</p>
+          <div class="hero-actions">
+            <button class="hero-primary booking-entry" type="button">Pronađi slobodan termin <span aria-hidden="true">↗</span></button>
+            <a class="hero-secondary hero-anchor" href="#howItWorks">Kako funkcionira</a>
+          </div>
+          <span class="hero-footnote">Rezervacije dostupne online · pregled ažuriran u stvarnom vremenu</span>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="court-art">
+            <span class="court-midline"></span>
+            <span class="court-service-left"></span>
+            <span class="court-service-right"></span>
+            <span class="court-net"></span>
+            <span class="court-ball"></span>
+          </div>
+          <div class="visual-chip top">
+            <span class="chip-icon">✓</span>
+            <div><strong>Termin potvrđen</strong><span>Rezervacija bez poziva</span></div>
+          </div>
+          <div class="visual-chip bottom">
+            <span class="chip-icon">↗</span>
+            <div><strong>Svi tereni na jednom mjestu</strong><span>Odaberi vrijeme koje ti odgovara</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="benefit-row" id="benefits">
+        <div class="benefit">
+          <span class="benefit-mark">24/7</span>
+          <div><strong>Rezerviraj kad ti odgovara</strong><span>Raspored dostupan online, i izvan radnog vremena.</span></div>
+        </div>
+        <div class="benefit">
+          <span class="benefit-mark">01</span>
+          <div><strong>Više terena, jedan raspored</strong><span>Usporedi dostupnost i odaberi pravi teren.</span></div>
+        </div>
+        <div class="benefit">
+          <span class="benefit-mark">↻</span>
+          <div><strong>Dostupnost uživo</strong><span>Rezervirani termini odmah su vidljivi ostalim igračima.</span></div>
+        </div>
+      </div>
+
+      <section class="how-section" id="howItWorks">
+        <div class="section-heading">
+          <div class="eyebrow">Jednostavno od prvog klika</div>
+          <h2>Tvoj termin. Tvoj teren. Bez komplikacija.</h2>
+          <p>Raspored je jednostavan za igrače, a klub uvijek ima pregled rezervacija i zauzetosti terena.</p>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-number">01 / ODABERI</span>
+            <h3>Pronađi svoj teren</h3>
+            <p>Usporedi dostupne termine na svim aktivnim terenima za odabrani dan.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">02 / REZERVIRAJ</span>
+            <h3>Odaberi vrijeme i trajanje</h3>
+            <p>Izaberi slobodan početak i trajanje igre koje ti odgovara.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-number">03 / IZAĐI NA TEREN</span>
+            <h3>Termin je tvoj</h3>
+            <p>Rezervacija se odmah sprema, a zauzeti termini sinkroniziraju se za sve korisnike.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="closing-banner">
+        <div><h2>Spreman/na za sljedeći meč?</h2><p>Prijavi se, pronađi termin i rezerviraj teren online.</p></div>
+        <button class="button button-primary booking-entry" type="button">Rezerviraj teren <span aria-hidden="true">↗</span></button>
+      </section>
+      <footer class="site-footer">
+        <span>© <span id="currentYear"></span> Rally · Rezervacije terena</span>
+        <span>Jednostavno rezerviranje, više vremena za igru.</span>
+      </footer>
+    </section>
+
+    <section class="setup-card hidden" id="setupView" aria-labelledby="setupTitle">
+      <button class="link-button auth-back" id="setupBack" type="button">← Povratak na početnu</button>
+      <div class="eyebrow">Prvo povezivanje</div>
+      <h1 id="setupTitle">Poveži svoju bazu</h1>
+      <p>Za zajedničke rezervacije i korisničke račune poveži aplikaciju sa svojim Supabase projektom.</p>
+      <ol class="setup-steps">
+        <li>Pokreni <code>supabase.sql</code> u SQL Editoru svog Supabase projekta.</li>
+        <li>U <code>app.js</code> unesi Project URL i anon/publishable ključ u konfiguraciju.</li>
+        <li>Posluži stranicu preko hostinga ili lokalnog web servera pa osvježi stranicu.</li>
+        <li>Dodaj ili uredi terene u tablici <code>courts</code> u Supabaseu.</li>
+      </ol>
+      <div class="setup-warning">U preglednik se smije staviti samo javni anon/publishable ključ. Nikad ne stavljaj service_role ključ u ovu datoteku.</div>
+    </section>
+
+    <section class="auth-card hidden" id="authView" aria-labelledby="authTitle">
+      <button class="link-button auth-back" id="authBack" type="button">← Povratak na početnu</button>
+      <div class="eyebrow">Dobro došli u Rally</div>
+      <h1 id="authTitle">Prijavi se</h1>
+      <p id="authDescription">Prijavi se za pregled rasporeda i rezervaciju terena.</p>
+      <form id="authForm">
+        <div class="field">
+          <label for="authEmail">E-mail</label>
+          <input id="authEmail" type="email" autocomplete="email" placeholder="ime@primjer.hr" required>
+        </div>
+        <div class="field">
+          <label for="authPassword">Lozinka</label>
+          <input id="authPassword" type="password" autocomplete="current-password" minlength="8" placeholder="Najmanje 8 znakova" required>
+        </div>
+        <div class="form-error" id="authError" role="status"></div>
+        <button class="button button-primary form-submit" id="authSubmit" type="submit">Prijavi se</button>
+      </form>
+      <p class="auth-switch"><span id="authSwitchText">Nemaš račun?</span> <button class="link-button" id="authSwitch" type="button">Registriraj se</button></p>
+    </section>
+
+    <section class="page hidden" id="appView">
+      <div class="intro">
+        <div>
+          <div class="eyebrow">Tvoj sportski termin</div>
+          <h1>Rezerviraj svoj teren</h1>
+          <p>Odaberi slobodan termin i vidimo se na terenu.</p>
+        </div>
+        <div class="account">
+          <span class="account-email" id="accountEmail"></span>
+          <button class="link-button" id="signOut" type="button">Odjava</button>
+        </div>
+      </div>
+
+      <div class="date-toolbar">
+        <div class="date-title" id="dateHeading"></div>
+        <div class="date-actions">
+          <button class="button icon-button" id="prevDay" type="button" aria-label="Prethodni dan">‹</button>
+          <button class="button" id="todayButton" type="button">Danas</button>
+          <button class="button icon-button" id="nextDay" type="button" aria-label="Sljedeći dan">›</button>
+        </div>
+      </div>
+      <div class="week-strip" id="weekStrip" aria-label="Odabir datuma"></div>
+      <div class="calendar-card">
+        <div class="message" id="scheduleMessage" role="status"></div>
+        <div class="calendar-scroll">
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+        <div class="calendar-footer">
+          <div class="legend">
+            <span class="legend-item"><span class="legend-swatch"></span>Moja rezervacija</span>
+            <span class="legend-item"><span class="legend-swatch booked"></span>Zauzeto</span>
+          </div>
+          <span>Termini počinju svakih 30 minuta</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="bookingModal" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+      <h2 id="bookingTitle">Rezerviraj termin</h2>
+      <p class="modal-subtitle" id="bookingSubtitle"></p>
+      <span class="duration-label">Odaberi trajanje</span>
+      <div class="duration-options" id="durationOptions">
+        <button class="duration-button" type="button" data-duration="60">1 sat</button>
+        <button class="duration-button" type="button" data-duration="90">1,5 sata</button>
+        <button class="duration-button" type="button" data-duration="120">2 sata</button>
+      </div>
+      <p class="modal-note">Termin je vidljiv drugim prijavljenim korisnicima kao zauzet.</p>
+      <div class="form-error" id="bookingError" role="status"></div>
+      <div class="modal-actions">
+        <button class="button" id="closeBooking" type="button">Odustani</button>
+        <button class="button button-primary" id="confirmBooking" type="button">Potvrdi rezervaciju</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop hidden" id="detailsModal" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+      <h2 id="detailsTitle">Detalji termina</h2>
+      <p class="modal-subtitle" id="detailsSubtitle"></p>
+      <p class="modal-note" id="detailsNote"></p>
+      <div class="form-error" id="detailsError" role="status"></div>
+      <div class="modal-actions">
+        <button class="button" id="closeDetails" type="button">Zatvori</button>
+        <button class="button button-danger hidden" id="cancelBooking" type="button">Otkaži rezervaciju</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
